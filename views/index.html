@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id = "d1">
+        
+        <h1>The Almighty Button</h1>
+        <br><br>
+        
+        <h4>Delete Button Counter:</h4>
+        <p id = "counter">
+            0
+        </p>
+        <br><br>
+        
+        <button id = "duplicator" onkeydown="check()" onclick="dup()">
+            Duplicate
+        </button>
+        <br><br>
+        
+        <div id = "d2"></div>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+</html>
