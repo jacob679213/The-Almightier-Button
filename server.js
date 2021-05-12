@@ -19,30 +19,37 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log(`user connected: ${chalk.blue(socket.id)}`)
+    
+    socket.emit('setup', { count: buttonCounter })
 
     socket.on('disconnect', () => {
         console.log(`user disconnected: ${chalk.red(socket.id)}`)
     })
 
     socket.on('sendUpdate',(payload) => {
-        let add = payload.add
         let res = null
 
-        if(add == true){
+        if(payload.add == true){
             buttonCounter++
-            console.log(`User ${chalk.blue(socket.id)} clicked the ${chalk.green('Duplicate')} button. there are now ${buttonCounter} buttons` )
+            console.log(`User ${chalk.blue(socket.id)} clicked the ${chalk.green('Duplicate')} button. there are now ${chalk.yellow(buttonCounter)} buttons` )
             res = {
-                add: true
+                add: true, 
+                count: buttonCounter
             }
         }
         else{
             buttonCounter--
-            console.log(`User ${chalk.blue(socket.id)} clicked the ${chalk.green('Delete')} button. there are now ${buttonCounter} buttons` )
-            
+            console.log(`User ${chalk.blue(socket.id)} clicked the ${chalk.red('Delete')} button. there are now ${chalk.yellow(buttonCounter)} buttons` )
+            res = {
+                add: false,
+                count: buttonCounter
+            }
         }
 
 
-        socket.emit('recieveUpdate')
+        socket.broadcast.emit('recieveUpdate',res)
+        socket.broadcast.emit('countUpdate', { count: buttonCounter })
+        socket.emit('countUpdate', { count: buttonCounter })
     })
 })
 

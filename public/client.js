@@ -1,63 +1,52 @@
 var d1
 var d2
-//const counter
+var buttonCounter
 var socket
 
-function onLoad(){
+function load(){
     d1 = document.getElementById('d1')
     d2 = document.getElementById('d2')
-    socket = io();
+    buttonCounter = document.getElementById('counter')
+    socket = io()
 }
 
-onLoad()
+load()
 
-function dup(){
-    let add = document.createElement("button")
-    add.onclick = function(){
+socket.on('setup', (res) => {
+    for(var i = 0; i < res.count; i++){
+        dup(true)
+    }
+    buttonCounter.innerHTML = res.count
+})
+
+function dup(serverTest){
+    let addButton = document.createElement("button")
+    addButton.onclick = function(){
         d2.removeChild(this)
         const payload = {
-            add: false,
-            whichButton: add
+            add: false
         }
         socket.emit('sendUpdate', payload)
     }
     let node = document.createTextNode("Delete")
-    add.appendChild(node)
-    d2.appendChild(add)
+    addButton.appendChild(node)
+    d2.appendChild(addButton)
 
-    const payload = {add: true}
-    socket.emit('sendUpdate', payload)
+    if(serverTest == false){
+        const payload = {add: true}
+        socket.emit('sendUpdate', payload)
+    }
 }
 
 socket.on('recieveUpdate', (payload) => {
-
+    if(payload.add == true){
+        dup(true)
+    }
+    else{
+        d2.removeChild(d2.lastChild)
+    }
 })
 
-/*
-//quick check if the key pressed was Space
-function check(){
-    var x = event.key
-    if (x == " "){
-        dup()
-    }
-    else if(x == "c"){
-        d2.innerHTML = ""
-        count = 0
-        counter.innerHTML = (count)
-    }
-    else if(x == "y"){
-        Yeetus()
-    }
-}
-
-function Yeetus(){
-    var r = confirm("Are you sure about that?")
-    if (r == true){
-        d1.innerHTML = ""
-        alert("Yeetus Yeetus, Self Deletus")
-    }
-    else if (r == false){
-        alert("Good Choice")
-    }
-}
-*/
+socket.on('countUpdate', (buttonCount) => {
+    buttonCounter.innerHTML = buttonCount.count
+})
